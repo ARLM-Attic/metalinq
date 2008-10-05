@@ -1,0 +1,14 @@
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilderDemo.exe
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilderDemo.pdb
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilder.dll
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilder.pdb
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ExpressionBuilderDemo.exe
+C:\Documents and Settings\Administrator\My Documents\Visual Studio Codename Orcas\Projects\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ExpressionBuilderDemo.pdb
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ExpressionBuilderDemo.exe
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ExpressionBuilderDemo.pdb
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilderDemo.exe
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilderDemo.pdb
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilder.dll
+C:\Users\Aaron\Documents\Visual Studio 2008\Projects\MetaLinq\ExpressionBuilder\ExpressionBuilderDemo\bin\Debug\ExpressionBuilder.pdb
