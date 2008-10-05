@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableNewExpression : EditableExpression
     {
         protected ConstructorInfo _constructor;
         protected EditableExpressionCollection _arguments;
 
         public ConstructorInfo Constructor { get { return _constructor; } set { _constructor = value; } }
+        [DataMember]
         public EditableExpressionCollection Arguments { get { return _arguments; } }
 
         public override ExpressionType NodeType
@@ -23,8 +26,13 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                // throw new Exception("The method or operation is not implemented.");
             }
+        }
+
+        public EditableNewExpression()
+        {
+
         }
 
         public EditableNewExpression(NewExpression newEx)

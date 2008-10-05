@@ -3,15 +3,18 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableNewArrayExpression : EditableExpression
     {
         protected EditableExpressionCollection _expressions = new EditableExpressionCollection();
         protected Type _type;
         protected ExpressionType _nodeType;
 
+        [DataMember]
         public EditableExpressionCollection Expressions { get { return _expressions; } }
         public Type Type { get { return _type; } set { _type = value; } }
 
@@ -28,6 +31,11 @@ namespace ExpressionBuilder
                 else
                     throw new InvalidOperationException("NodeType for NewArrayExpression must be ExpressionType.NewArrayInit or ExpressionType.NewArrayBounds");
             }
+        }
+
+        public EditableNewArrayExpression()
+        {
+
         }
 
         public EditableNewArrayExpression(NewArrayExpression newEx) :

@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableMethodCallExpression : EditableExpression
     {
         protected EditableExpressionCollection _arguments;
@@ -14,8 +16,10 @@ namespace ExpressionBuilder
         protected EditableExpression _object;
         protected readonly ExpressionType _nodeType;
 
+        [DataMember]
         public EditableExpressionCollection Arguments { get { return _arguments; } }
         public MethodInfo Method { get { return _method; } set { _method = value; } }
+        [DataMember]
         public EditableExpression Object { get { return _object; } set { _object = value; } }
 
         public override ExpressionType NodeType
@@ -26,8 +30,13 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                // throw new Exception("The method or operation is not implemented.");
             }
+        }
+
+        public EditableMethodCallExpression()
+        {
+
         }
 
         public EditableMethodCallExpression(EditableExpressionCollection arguments, MethodInfo method, EditableExpression theObject, ExpressionType nodeType)

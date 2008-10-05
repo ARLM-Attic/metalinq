@@ -3,18 +3,27 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableLambdaExpression : EditableExpression 
     {
         protected EditableExpression _body;
         protected EditableExpressionCollection _parameters = new EditableExpressionCollection();
         protected Type _type;
 
+        [DataMember]
         public EditableExpression Body { get { return _body; } set { _body = value; } }
-        public EditableExpressionCollection Parameters { get { return _parameters; } }
-        
+        [DataMember]
+        public EditableExpressionCollection Parameters { get { return _parameters; } set { _parameters = value; } }
+
+        public EditableLambdaExpression()
+        {
+
+        }
+
         public override ExpressionType NodeType
         {
             get
@@ -23,9 +32,12 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                //throw new Exception("The method or operation is not implemented.");
             }
         }
+
+      
+
         public EditableLambdaExpression(LambdaExpression lambEx)
         {
             _body = EditableExpression.CreateEditableExpression(lambEx.Body);

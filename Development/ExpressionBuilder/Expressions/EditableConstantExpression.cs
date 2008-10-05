@@ -3,18 +3,26 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableConstantExpression : EditableExpression
     {
         protected object _value;
         protected ExpressionType _nodeType;
 
+        [DataMember]
         public object Value
         {
             get { return _value; }
             set { _value = value; }
+        }
+
+        public EditableConstantExpression()
+        {
+
         }
 
         public EditableConstantExpression(object value)
@@ -31,7 +39,7 @@ namespace ExpressionBuilder
         {
             return Expression.Constant(_value) as Expression;
         }
-
+        
         public override ExpressionType NodeType
         {
             get
@@ -40,7 +48,7 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                //throw new Exception("The method or operation is not implemented.");
             }
         }
     }

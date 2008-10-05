@@ -3,17 +3,25 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     class EditableParameterExpression : EditableExpression
     {
         protected Type _type;
         protected string _name;
 
         public Type Type { get { return _type; } set { _type = value; } }
+        [DataMember]
         public string Name { get { return _name; } set { _name = value; } }
-        
+
+        public EditableParameterExpression()
+        {
+
+        }
+
         public override ExpressionType NodeType
         {
             get
@@ -22,7 +30,7 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                // throw new Exception("The method or operation is not implemented.");
             }
         }
 

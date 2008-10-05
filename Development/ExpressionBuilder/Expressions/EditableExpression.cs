@@ -3,11 +3,28 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
+    [KnownType(typeof(EditableMemberExpression))]
+    [KnownType(typeof(EditableListInitExpression))]
+    [KnownType(typeof(EditableNewExpression))]
+    [KnownType(typeof(EditableNewArrayExpression))]
+    [KnownType(typeof(EditableTypeBinaryExpression))]
+    [KnownType(typeof(EditableMemberInitExpression))]
+    [KnownType(typeof(EditableInvocationExpression))]
+    [KnownType(typeof(EditableBinaryExpression))]
+    [KnownType(typeof(EditableParameterExpression))]
+    [KnownType(typeof(EditableExpressionCollection))]
+    [KnownType(typeof(EditableConstantExpression))]
+    [KnownType(typeof(EditableConditionalExpression))]
+    [KnownType(typeof(EditableUnaryExpression))]
+    [KnownType(typeof(EditableMethodCallExpression))]
     public abstract class EditableExpression
     {
+        [DataMember]
         public abstract ExpressionType NodeType { get; set; }
         public abstract Expression ToExpression();
 

@@ -3,23 +3,28 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
-    class EditableInvocationExpression : EditableExpression
+    [DataContract]
+    public class EditableInvocationExpression : EditableExpression
     {
         protected EditableExpression _expression;
         protected EditableExpressionCollection _arguments = new EditableExpressionCollection();
 
+        [DataMember]
         public EditableExpression Expression
         {
             get { return _expression; }
             set { _expression = value; }
         }
 
+        [DataMember]
         public EditableExpressionCollection Arguments
         {
             get { return _arguments; }
+            set { _arguments = value; }
         }
 
         public override ExpressionType NodeType
@@ -30,9 +35,9 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                //throw new Exception("The method or operation is not implemented.");
             }
-        }
+        }      
 
         public EditableInvocationExpression(InvocationExpression invocEx)
         {

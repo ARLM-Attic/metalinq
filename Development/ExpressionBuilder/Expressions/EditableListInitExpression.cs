@@ -3,16 +3,20 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
 
 namespace ExpressionBuilder
 {
+    [DataContract]
     public class EditableListInitExpression : EditableExpression
     {
         protected EditableExpressionCollection _initializers = new EditableExpressionCollection();
         protected EditableExpression _new;
 
+        [DataMember]
         public EditableExpression NewExpression { get { return _new; } set { _new = value; } }
-        public EditableExpressionCollection Expressions { get { return _initializers; } }
+        [DataMember]
+        public EditableExpressionCollection Expressions { get { return _initializers; } set { _initializers = value; } }
         
         public override ExpressionType NodeType
         {
@@ -22,8 +26,13 @@ namespace ExpressionBuilder
             }
             set
             {
-                throw new Exception("The method or operation is not implemented.");
+                //throw new Exception("The method or operation is not implemented.");
             }
+        }
+
+        public EditableListInitExpression()
+        {
+
         }
 
         public EditableListInitExpression(ListInitExpression listInit)
