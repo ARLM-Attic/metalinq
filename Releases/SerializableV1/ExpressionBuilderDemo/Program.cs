@@ -1,0 +1,233 @@
+﻿//using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+using ExpressionBuilder;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.IO;
+using System.Xml.Serialization;
+using System;
+
+namespace ExpressionBuilderDemo
+{
+    public class TestList : List<Test>
+    {
+        public override string ToString()
+        {
+            string str = "";
+            foreach (Test t in this)
+            {
+                str += Environment.NewLine+ t.ToString();
+            }
+            return str;
+        }
+    }
+
+    public struct PropHolder
+    {
+        public int NumberProperty { get; set; }
+    }
+
+    [DataContract]
+    public class Test
+    {
+        public Test()
+        {
+
+        }
+        public Test(int a, int b)
+        {
+            num = a;
+            Number = b;
+        }
+        public Test(int a)
+        {
+            num = a;
+        }
+        [DataMember]
+        public int num;
+        [DataMember]
+        public int Number { get; set; }
+        [DataMember]
+        public List<int> numbers = new List<int>();
+        [DataMember]
+        public PropHolder numberProp = new PropHolder();
+
+        public override string ToString()
+        {
+            return string.Format("num: {0}, Number: {1}, numberProp: {3}, Numbers: {2}", num, Number,
+                string.Join(",", Array.ConvertAll<int, string>(numbers.ToArray(), Convert.ToString)), numberProp.NumberProperty);
+        }
+        public static int operator +(Test a)
+        {
+            return a.num+1;
+        }     
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //make a lambda            
+            //create an editable version of the lambda
+            //Expression<Func<int, int>> lambda = x => x + 1;
+            //EditableExpression mutableLambda = EditableExpression.CreateEditableExpression(lambda);
+
+            Test testObject = new Test() { num = 1, Number = 2 };
+            Func<Test, Test> methodCall = delegate(Test obj) { obj.num = 3; return obj; };
+            int numberValue = 3;
+
+            Console.WriteLine("X is " + numberValue);
+
+            
+            Expression e = Expression.UnaryPlus(Expression.New(typeof(Test)));
+            //Expression<Func<int, Test, int>> lambda1 = (x, y) => +testObject;
+            Expression<Func<int, Test, int>> lambda = (x,y) => +y;
+            
+            
+
+
+            //EditableExpression
+            //EditableLambdaExpression
+            //EditableBinaryExpression
+            //EditableParameterExpression
+            //EditableConstantExpression
+            //EditableExpressionCollection
+            CheckSerialization<int, int>(x => x + x, numberValue);
+
+            //EditableConditionalExpression
+            //EditableUnaryExpression
+            CheckSerialization<int, bool>(x => (-x > 5) ? true : false, numberValue);
+            CheckSerialization<Test, int>(x => +x, testObject);
+
+            //EditableMethodCallExpression
+            CheckSerialization<int, string>(x => x.ToString(), numberValue);
+
+            //EditableMemberExpression                    
+            CheckSerialization<Test, int>((x) => x.num + x.Number, testObject);
+
+            //EditableTypeBinaryExpression
+            CheckSerialization<object, bool>((x) => (x is Test), testObject);
+            CheckSerialization<object, bool>((x) => (x is Test), numberValue); 
+
+            //EditableInvocationExpression
+            CheckSerialization<Test, Func<Test, Test>, Test>((x, y) => y(x), testObject, methodCall);
+
+            //EditableNewExpression            
+            CheckSerialization<Test>(() => new Test());
+            CheckSerialization<Test>(() => new Test { num = 0 });
+            CheckSerialization<object>(() => new { a = 1, b = 2 }); // using members
+
+            //EditableNewArrayExpression
+            CheckSerialization<Test[]>(() => new Test[5]);
+            CheckSerialization<int[]>(() => new int[5] { 5, 4, 3, 2, 1 });
+
+            //EditableListInitExpression 
+            CheckSerialization<Test, TestList>((x => new TestList() { x, x }), testObject);            
+
+            //EditableMemberInitExpression - EditableMemberAssignment
+            CheckSerialization<Test, Test>((x => new Test { Number = 4 }), testObject);
+            
+            //EditableMemberInitExpression - EditableMemberListBinding
+            CheckSerialization<Test, Test>((x => new Test { numbers = {1,2} }), testObject);
+
+            //EditableMemberInitExpression - EditableMemberMemberBinding            
+            CheckSerialization<Test, Test>((x => new Test() { numberProp = { NumberProperty = 3 } }), testObject);
+
+            /*
+            //make the adder from a version of the editable lambda in it's virgin state
+            LambdaExpression adder = mutableLambda.ToExpression() as LambdaExpression;
+            //Do Linq over Expressions :) - find all the binary expressions
+            var editableBinaryExpressions = from x in mutableLambda.Nodes()
+                                            where x is EditableBinaryExpression
+                                            select x;
+            //Change all the binary expressions to do subtraction
+            foreach (EditableBinaryExpression x in editableBinaryExpressions)
+                x.NodeType = ExpressionType.Subtract;
+            //Now, make a subtractor, since we have changed the expression
+            LambdaExpression subtractor = mutableLambda.ToExpression() as LambdaExpression;
+
+            //Ok, now the test
+            //Console.WriteLine("Pick a number, any number:");
+            //string stringInput = Console.ReadLine();
+            //int input;
+            //if (int.TryParse(stringInput,out input))
+            //{
+            //    //get and display the subtraction result
+            //    int subResult = (int) subtractor.Compile().DynamicInvoke(input);
+            //    Console.WriteLine("Subtractor result : "  + subResult);
+            //    //get and display the add result
+            //    int addResult = (int) adder.Compile().DynamicInvoke(input);
+            //    Console.WriteLine("Adder result : " + addResult);
+            //}
+            ////keep console open so tester can validate results
+            //Console.WriteLine("Demonstration complete.  Press any key to continue.");
+            //Console.ReadKey();                            
+*/
+        }
+
+        private static void CheckSerialization<T>(Expression<Func<T>> lambda)
+        {
+            EditableExpression e = CheckSerializationInternal(EditableExpression.CreateEditableExpression(lambda));
+            InvokeExpression(e);
+        }
+
+        private static void CheckSerialization<T1, T2>(Expression<Func<T1, T2>> lambda, T1 value)
+        {
+            EditableExpression e = CheckSerializationInternal(EditableExpression.CreateEditableExpression(lambda));
+            InvokeExpression<T1>(e, value);
+        }
+
+        private static void CheckSerialization<T1, T2, T3>(Expression<Func<T1, T2, T3>> lambda, T1 value1, T2 value2)
+        {
+            EditableExpression e = CheckSerializationInternal(EditableExpression.CreateEditableExpression(lambda));
+            InvokeExpression<T1, T2>(e, value1, value2);
+        }
+
+        private static EditableExpression CheckSerializationInternal(EditableExpression mutableLambda)
+        {
+            //NetDataContractSerializer dcs = new NetDataContractSerializer();
+
+            DataContractSerializer dcs = new DataContractSerializer(mutableLambda.GetType());
+            MemoryStream ms = new MemoryStream();
+            XmlDictionaryWriter xdw = XmlDictionaryWriter.CreateTextWriter(ms, Encoding.UTF8, true);
+            dcs.WriteObject(xdw, mutableLambda);
+            //XmlSerializer xs = new XmlSerializer(mutableLambda.GetType(),
+            //  new Type[]{typeof(EditableBinaryExpression), typeof(EditableParameterExpression)});
+            //xs.Serialize(ms, mutableLambda);
+            xdw.Flush();
+            ms.Flush();
+            string str = Encoding.UTF8.GetString(ms.ToArray());
+
+            MemoryStream ms2 = new MemoryStream(Encoding.UTF8.GetBytes(str));
+            Object o = dcs.ReadObject(ms2);
+            if (o is EditableExpression)
+            {
+                return o as EditableExpression;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static void InvokeExpression(EditableExpression mutableLambda)
+        {
+            LambdaExpression e = mutableLambda.ToExpression() as LambdaExpression;
+            Console.WriteLine(e.ToString() + " = " + e.Compile().DynamicInvoke());
+        }
+
+        private static void InvokeExpression<T>(EditableExpression mutableLambda, T value)
+        {
+            LambdaExpression e = mutableLambda.ToExpression() as LambdaExpression;
+            Console.WriteLine(e.ToString() + " = " + e.Compile().DynamicInvoke(value));
+        }
+        private static void InvokeExpression<T1, T2>(EditableExpression mutableLambda, T1 value1, T2 value2)
+        {
+            LambdaExpression e = mutableLambda.ToExpression() as LambdaExpression;
+            Console.WriteLine(e.ToString() + " = " + e.Compile().DynamicInvoke(value1, value2));
+        }
+    }
+}
