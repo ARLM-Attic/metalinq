@@ -27,6 +27,7 @@ namespace ExpressionBuilder
         [DataMember]
         public abstract ExpressionType NodeType { get; set; }
         public abstract Expression ToExpression();
+        protected Type _type;
 
         public EditableExpression() { } //allow for non parameterized creation for all expressions
 
@@ -80,6 +81,23 @@ namespace ExpressionBuilder
             else if (ex is TypeBinaryExpression) return new EditableTypeBinaryExpression(ex as TypeBinaryExpression);
             else if (ex is UnaryExpression) return new EditableUnaryExpression(ex as UnaryExpression);
             else return null;
+        }
+
+        [DataMember()]
+        protected string TypeName
+        {
+            get
+            {
+                if (_type == null)
+                    return null;
+
+                return _type.ToSerializableForm();
+            }
+            set
+            {
+                if (value != null)
+                    _type = _type.FromSerializableForm(value);
+            }
         }
     }
 }

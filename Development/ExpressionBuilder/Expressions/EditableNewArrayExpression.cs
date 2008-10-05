@@ -10,8 +10,7 @@ namespace ExpressionBuilder
     [DataContract]
     public class EditableNewArrayExpression : EditableExpression
     {
-        protected EditableExpressionCollection _expressions = new EditableExpressionCollection();
-        protected Type _type;
+        protected EditableExpressionCollection _expressions = new EditableExpressionCollection();        
         protected ExpressionType _nodeType;
 
         [DataMember]
@@ -31,20 +30,7 @@ namespace ExpressionBuilder
                 else
                     throw new InvalidOperationException("NodeType for NewArrayExpression must be ExpressionType.NewArrayInit or ExpressionType.NewArrayBounds");
             }
-        }
-
-        [DataMember()]
-        private string TypeName
-        {
-            get
-            {
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                _type = _type.FromSerializableForm(value);
-            }
-        }
+        }      
 
         public EditableNewArrayExpression()
         {

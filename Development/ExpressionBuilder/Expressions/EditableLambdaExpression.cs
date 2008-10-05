@@ -11,8 +11,7 @@ namespace ExpressionBuilder
     public class EditableLambdaExpression : EditableExpression 
     {
         protected EditableExpression _body;
-        protected EditableExpressionCollection _parameters = new EditableExpressionCollection();
-        protected Type _type;
+        protected EditableExpressionCollection _parameters = new EditableExpressionCollection();        
 
         [DataMember]
         public EditableExpression Body { get { return _body; } set { _body = value; } }
@@ -22,19 +21,6 @@ namespace ExpressionBuilder
         public EditableLambdaExpression()
         {
 
-        }
-
-        [DataMember()]
-        private string TypeName
-        {
-            get
-            {
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                _type = _type.FromSerializableForm(value);
-            }
         }
 
         public override ExpressionType NodeType

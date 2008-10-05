@@ -12,8 +12,7 @@ namespace ExpressionBuilder
     public class EditableNewExpression : EditableExpression
     {
         protected ConstructorInfo _constructor;
-        protected EditableExpressionCollection _arguments;
-        protected Type _type;
+        protected EditableExpressionCollection _arguments;    
 
         public ConstructorInfo Constructor { get { return _constructor; } set { _constructor = value; } }
         [DataMember]
@@ -21,32 +20,7 @@ namespace ExpressionBuilder
 
         [DataMember]
         public EditableMemberInfoCollection Members { get; set; }
-
-        [DataMember()]
-        private string TypeName
-        {
-            get
-            {
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                _type = _type.FromSerializableForm(value);
-            }
-        }
-
-        public Type Type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-            }
-        }
-
+      
         [DataMember()]
         private string ConstructorName
         {

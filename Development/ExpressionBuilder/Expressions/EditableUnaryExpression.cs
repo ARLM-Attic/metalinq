@@ -12,25 +12,11 @@ namespace ExpressionBuilder
     {
         protected ExpressionType _nodeType;
         protected EditableExpression _operand;
-        protected Type _type;
-
+       
         [DataMember]
         public EditableExpression Operand { get { return _operand; } set { _operand = value; } }
         public Type Type { get { return _type; } set { _type = value; } }
-
-        [DataMember]
-        private string TypeName
-        {
-            get
-            {
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                _type = _type.FromSerializableForm(value);
-            }
-        }
-
+     
         [DataMember]
         public override ExpressionType NodeType
         {

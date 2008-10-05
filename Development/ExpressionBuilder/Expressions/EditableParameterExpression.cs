@@ -12,9 +12,7 @@ namespace ExpressionBuilder
     {
         private static Dictionary<string, ParameterExpression> _usableParameters =
             new Dictionary<string, ParameterExpression>();
-
-
-        protected Type _type;
+       
         protected string _name;
 
         public Type Type { get { return _type; } set { _type = value; } }
@@ -24,20 +22,7 @@ namespace ExpressionBuilder
         public EditableParameterExpression()
         {
 
-        }
-
-        [DataMember()]
-        private string TypeName
-        {
-            get
-            {
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                _type = _type.FromSerializableForm(value);
-            }
-        }
+        }       
 
         public override ExpressionType NodeType
         {
