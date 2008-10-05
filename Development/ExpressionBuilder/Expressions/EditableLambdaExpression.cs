@@ -24,6 +24,19 @@ namespace ExpressionBuilder
 
         }
 
+        [DataMember()]
+        private string TypeName
+        {
+            get
+            {
+                return _type.ToSerializableForm();
+            }
+            set
+            {
+                _type = _type.FromSerializableForm(value);
+            }
+        }
+
         public override ExpressionType NodeType
         {
             get

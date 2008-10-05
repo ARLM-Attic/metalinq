@@ -22,6 +22,19 @@ namespace ExpressionBuilder
         {
 
         }
+        
+        [DataMember]
+        public string MemberName
+        {
+            get
+            {
+                return _member.ToSerializableForm();
+            }
+            set
+            {
+                _member = _member.FromSerializableForm(value);
+            }
+        }
 
         public override ExpressionType NodeType
         {
@@ -46,7 +59,7 @@ namespace ExpressionBuilder
         }
 
         public EditableMemberExpression(MemberExpression membEx)
-            : this(EditableExpression.CreateEditableExpression(membEx),membEx.Member)
+            : this(EditableExpression.CreateEditableExpression(membEx.Expression), membEx.Member)
         {}
 
         public override Expression ToExpression()

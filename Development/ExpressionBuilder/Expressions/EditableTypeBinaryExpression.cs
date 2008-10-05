@@ -17,6 +17,19 @@ namespace ExpressionBuilder
         public EditableExpression Expression { get { return _expression; } set { _expression = value; } }
         public Type TypeOperand { get { return _typeOperand; } set { _typeOperand = value; } }
 
+        [DataMember()]
+        private string TypeOperandName
+        {
+            get
+            {
+                return _typeOperand.ToSerializableForm();
+            }
+            set
+            {
+                _typeOperand = _typeOperand.FromSerializableForm(value);
+            }
+        }
+
         public override ExpressionType NodeType
         {
             get

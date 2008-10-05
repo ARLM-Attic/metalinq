@@ -15,9 +15,9 @@ namespace ExpressionBuilder
         protected ExpressionType _nodeType;
 
         [DataMember]
-        public EditableExpressionCollection Expressions { get { return _expressions; } }
-        public Type Type { get { return _type; } set { _type = value; } }
+        public EditableExpressionCollection Expressions { get { return _expressions; } set { _expressions = value; } }
 
+        [DataMember]
         public override ExpressionType NodeType
         {
             get
@@ -26,10 +26,23 @@ namespace ExpressionBuilder
             }
             set
             {
-                if (_nodeType == ExpressionType.NewArrayInit || _nodeType == ExpressionType.NewArrayBounds)
+                if (value == ExpressionType.NewArrayInit || value == ExpressionType.NewArrayBounds)
                     _nodeType = value;
                 else
                     throw new InvalidOperationException("NodeType for NewArrayExpression must be ExpressionType.NewArrayInit or ExpressionType.NewArrayBounds");
+            }
+        }
+
+        [DataMember()]
+        private string TypeName
+        {
+            get
+            {
+                return _type.ToSerializableForm();
+            }
+            set
+            {
+                _type = _type.FromSerializableForm(value);
             }
         }
 
@@ -56,9 +69,9 @@ namespace ExpressionBuilder
         public override Expression ToExpression()
         {
             if (_nodeType == ExpressionType.NewArrayBounds)
-                return Expression.NewArrayBounds(_type, _expressions.GetExpressions());
+                return Expression.NewArrayBounds(_type.GetElementType(), _expressions.GetExpressions());
             else if (_nodeType == ExpressionType.NewArrayInit)
-                return Expression.NewArrayInit(_type, _expressions.GetExpressions());
+                return Expression.NewArrayInit(_type.GetElementType(), _expressions.GetExpressions());
             else
                 throw new InvalidOperationException("NodeType for NewArrayExpression must be ExpressionType.NewArrayInit or ExpressionType.NewArrayBounds");
         }

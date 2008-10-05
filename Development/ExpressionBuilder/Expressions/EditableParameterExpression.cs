@@ -8,8 +8,12 @@ using System.Runtime.Serialization;
 namespace ExpressionBuilder
 {
     [DataContract]
-    class EditableParameterExpression : EditableExpression
+    public class EditableParameterExpression : EditableExpression
     {
+        private static Dictionary<string, ParameterExpression> _usableParameters =
+            new Dictionary<string, ParameterExpression>();
+
+
         protected Type _type;
         protected string _name;
 
@@ -20,6 +24,19 @@ namespace ExpressionBuilder
         public EditableParameterExpression()
         {
 
+        }
+
+        [DataMember()]
+        private string TypeName
+        {
+            get
+            {
+                return _type.ToSerializableForm();
+            }
+            set
+            {
+                _type = _type.FromSerializableForm(value);
+            }
         }
 
         public override ExpressionType NodeType
@@ -44,9 +61,25 @@ namespace ExpressionBuilder
             _name = name;
         }
 
+        static public ParameterExpression CreateParameter(Type type, string name)
+        {
+            ParameterExpression parameter = null;
+            string key = type.AssemblyQualifiedName + Environment.NewLine + name;
+            if (_usableParameters.ContainsKey(key))
+            {
+                parameter = _usableParameters[key] as ParameterExpression;
+            }
+            else
+            {
+                parameter = Expression.Parameter(type, name);
+                _usableParameters.Add(key, parameter);
+            }
+            return parameter;
+        }
+
         public override Expression ToExpression()
         {
-            return Expression.Parameter(_type,_name);
+            return CreateParameter(_type, _name); 
         }
     }
 }

@@ -19,6 +19,19 @@ namespace ExpressionBuilder
         public Type Type { get { return _type; } set { _type = value; } }
 
         [DataMember]
+        private string TypeName
+        {
+            get
+            {
+                return _type.ToSerializableForm();
+            }
+            set
+            {
+                _type = _type.FromSerializableForm(value);
+            }
+        }
+
+        [DataMember]
         public override ExpressionType NodeType
         {
             get
@@ -49,7 +62,10 @@ namespace ExpressionBuilder
 
         public override Expression ToExpression()
         {
-            return Expression.MakeUnary(_nodeType, _operand.ToExpression(), _type);
+             if (_nodeType == ExpressionType.UnaryPlus)
+                return Expression.UnaryPlus(_operand.ToExpression());
+            else
+                return Expression.MakeUnary(_nodeType, _operand.ToExpression(), _type);        
         }
     }
 }

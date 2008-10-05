@@ -14,11 +14,25 @@ namespace ExpressionBuilder
         protected EditableExpressionCollection _arguments;
         protected MethodInfo _method;
         protected EditableExpression _object;
-        protected readonly ExpressionType _nodeType;
+        protected ExpressionType _nodeType;
 
         [DataMember]
-        public EditableExpressionCollection Arguments { get { return _arguments; } }
+        public EditableExpressionCollection Arguments { get { return _arguments; } set { _arguments = value; } }
         public MethodInfo Method { get { return _method; } set { _method = value; } }
+
+        [DataMember]
+        public string MethodName
+        {
+            get
+            {
+                return _method.ToSerializableForm();
+            }
+            set
+            {
+                _method = _method.FromSerializableForm(value);
+            }
+        }
+
         [DataMember]
         public EditableExpression Object { get { return _object; } set { _object = value; } }
 
@@ -30,7 +44,7 @@ namespace ExpressionBuilder
             }
             set
             {
-                // throw new Exception("The method or operation is not implemented.");
+                _nodeType = value;
             }
         }
 
