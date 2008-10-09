@@ -10,36 +10,36 @@ namespace ExpressionBuilder
     [DataContract]
     public class EditableMemberAssignment : EditableMemberBinding
     {
-        protected EditableExpression _expression;
-
+        // Properties
         [DataMember]
-        public EditableExpression Expression { get {return _expression;} set {_expression = value;}}
+        public EditableExpression Expression 
+        { 
+            get;
+            set;
+        }
 
-        public EditableMemberAssignment ()
-	    {
+        public override MemberBindingType BindingType
+        {
+            get { return MemberBindingType.Assignment; }
+            set { }
+        }
 
-	    }
+        // Ctors
+        public EditableMemberAssignment()
+        {
+        }
 
-        public EditableMemberAssignment (MemberAssignment member) : base(member.BindingType, member.Member)
-	    {
-            _expression = EditableExpression.CreateEditableExpression(member.Expression);
-	    }
+        public EditableMemberAssignment(MemberAssignment member) 
+            : base(member.BindingType, member.Member)
+        {
+            Expression = EditableExpression.CreateEditableExpression(member.Expression);
+        }
 
+        // Methods
         public override MemberBinding ToMemberBinding()
         {
-            return System.Linq.Expressions.Expression.Bind(_member, _expression.ToExpression());
+            return System.Linq.Expressions.Expression.Bind(Member, Expression.ToExpression());
         }
 
-         public override MemberBindingType BindingType
-        {
-            get
-            {
-                return MemberBindingType.Assignment;
-            }
-            set
-            {
-                
-            }
-        }
     }
 }

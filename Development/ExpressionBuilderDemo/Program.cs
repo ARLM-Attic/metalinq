@@ -84,10 +84,7 @@ namespace ExpressionBuilderDemo
             
             Expression e = Expression.UnaryPlus(Expression.New(typeof(Test)));
             //Expression<Func<int, Test, int>> lambda1 = (x, y) => +testObject;
-            Expression<Func<int, Test, int>> lambda = (x,y) => +y;
-            
-            
-
+            Expression<Func<int, string>> lambda = (x) => x.ToString();            
 
             //EditableExpression
             //EditableLambdaExpression
@@ -134,38 +131,7 @@ namespace ExpressionBuilderDemo
             CheckSerialization<Test, Test>((x => new Test { numbers = {1,2} }), testObject);
 
             //EditableMemberInitExpression - EditableMemberMemberBinding            
-            CheckSerialization<Test, Test>((x => new Test() { numberProp = { NumberProperty = 3 } }), testObject);
-
-            /*
-            //make the adder from a version of the editable lambda in it's virgin state
-            LambdaExpression adder = mutableLambda.ToExpression() as LambdaExpression;
-            //Do Linq over Expressions :) - find all the binary expressions
-            var editableBinaryExpressions = from x in mutableLambda.Nodes()
-                                            where x is EditableBinaryExpression
-                                            select x;
-            //Change all the binary expressions to do subtraction
-            foreach (EditableBinaryExpression x in editableBinaryExpressions)
-                x.NodeType = ExpressionType.Subtract;
-            //Now, make a subtractor, since we have changed the expression
-            LambdaExpression subtractor = mutableLambda.ToExpression() as LambdaExpression;
-
-            //Ok, now the test
-            //Console.WriteLine("Pick a number, any number:");
-            //string stringInput = Console.ReadLine();
-            //int input;
-            //if (int.TryParse(stringInput,out input))
-            //{
-            //    //get and display the subtraction result
-            //    int subResult = (int) subtractor.Compile().DynamicInvoke(input);
-            //    Console.WriteLine("Subtractor result : "  + subResult);
-            //    //get and display the add result
-            //    int addResult = (int) adder.Compile().DynamicInvoke(input);
-            //    Console.WriteLine("Adder result : " + addResult);
-            //}
-            ////keep console open so tester can validate results
-            //Console.WriteLine("Demonstration complete.  Press any key to continue.");
-            //Console.ReadKey();                            
-*/
+            CheckSerialization<Test, Test>((x => new Test() { numberProp = { NumberProperty = 3 } }), testObject);           
         }
 
         private static void CheckSerialization<T>(Expression<Func<T>> lambda)
@@ -187,22 +153,22 @@ namespace ExpressionBuilderDemo
         }
 
         private static EditableExpression CheckSerializationInternal(EditableExpression mutableLambda)
-        {
-            //NetDataContractSerializer dcs = new NetDataContractSerializer();
-
+        {            
             DataContractSerializer dcs = new DataContractSerializer(mutableLambda.GetType());
             MemoryStream ms = new MemoryStream();
             XmlDictionaryWriter xdw = XmlDictionaryWriter.CreateTextWriter(ms, Encoding.UTF8, true);
-            dcs.WriteObject(xdw, mutableLambda);
-            //XmlSerializer xs = new XmlSerializer(mutableLambda.GetType(),
-            //  new Type[]{typeof(EditableBinaryExpression), typeof(EditableParameterExpression)});
-            //xs.Serialize(ms, mutableLambda);
+            //dcs.WriteObject(xdw, mutableLambda);
+            
+            XmlSerializer xs = new XmlSerializer(mutableLambda.GetType());
+            xs.Serialize(ms, mutableLambda);
+
             xdw.Flush();
             ms.Flush();
             string str = Encoding.UTF8.GetString(ms.ToArray());
 
             MemoryStream ms2 = new MemoryStream(Encoding.UTF8.GetBytes(str));
-            Object o = dcs.ReadObject(ms2);
+            //Object o = dcs.ReadObject(ms2);
+            object o = xs.Deserialize(ms2);
             if (o is EditableExpression)
             {
                 return o as EditableExpression;

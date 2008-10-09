@@ -5,54 +5,60 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableMemberInitExpression : EditableExpression
     {
-        EditableMemberBindingCollection _memberBindings = new EditableMemberBindingCollection();
-        EditableNewExpression _new;
-
+        // Properties
         [DataMember]
-        public EditableNewExpression NewExpression { get { return _new; } set { _new = value; } }
-        [DataMember]
-        public EditableMemberBindingCollection Bindings { get { return _memberBindings; } set { _memberBindings = value; } }
-
-        public override ExpressionType NodeType
+        public EditableNewExpression NewExpression
         {
-            get
-            {
-                return ExpressionType.MemberInit;
-            }
-            set
-            {
-                // throw new Exception("The method or operation is not implemented.");
-            }
+            get;
+            set;
         }
 
+        [DataMember]
+        public EditableMemberBindingCollection Bindings
+        {
+            get;
+            set;
+        }
+        
+        public override ExpressionType NodeType
+        {
+            get { return ExpressionType.MemberInit; }
+            set { }
+        }
+
+        // Ctors
         public EditableMemberInitExpression()
         {
-
+            Bindings = new EditableMemberBindingCollection();
         }
 
         public EditableMemberInitExpression(MemberInitExpression membInit)
-            : this(EditableExpression.CreateEditableExpression(membInit.NewExpression) as EditableNewExpression,membInit.Bindings)
-        {}
+            : this(EditableExpression.CreateEditableExpression(membInit.NewExpression) as EditableNewExpression, membInit.Bindings)
+        {
+        }
 
         public EditableMemberInitExpression(EditableNewExpression newEx, IEnumerable<MemberBinding> bindings)
         {
-            _memberBindings = new EditableMemberBindingCollection(bindings);
-            _new = newEx;
+            Bindings = new EditableMemberBindingCollection(bindings);
+            NewExpression = newEx;
         }
 
         public EditableMemberInitExpression(NewExpression newRawEx, IEnumerable<MemberBinding> bindings)
-            : this(EditableExpression.CreateEditableExpression(newRawEx) as EditableNewExpression,bindings)
-        {}
+            : this(EditableExpression.CreateEditableExpression(newRawEx) as EditableNewExpression, bindings)
+        {
+        }
 
+        // Methods
         public override Expression ToExpression()
         {
-            return Expression.MemberInit(_new.ToExpression() as NewExpression, _memberBindings.GetMemberBindings());
+            return Expression.MemberInit(NewExpression.ToExpression() as NewExpression, Bindings.GetMemberBindings());
         }
     }
 }

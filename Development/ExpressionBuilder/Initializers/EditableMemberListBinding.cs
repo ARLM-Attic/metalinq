@@ -10,39 +10,40 @@ namespace ExpressionBuilder
     [DataContract]
     public class EditableMemberListBinding : EditableMemberBinding
     {
-        protected EditableElementInitCollection _initializers = new EditableElementInitCollection();
-
+        // Properties
         [DataMember]
-        public EditableElementInitCollection Initializers { get { return _initializers; } set { _initializers = value; } }
+        public EditableElementInitCollection Initializers
+        {
+            get;
+            set;
+        }
 
+        public override MemberBindingType BindingType
+        {
+            get { return MemberBindingType.ListBinding; }
+            set { }
+        }
+
+        // Ctors
         public EditableMemberListBinding()
         {
-
+            Initializers = new EditableElementInitCollection();
         }
 
         public EditableMemberListBinding(MemberListBinding member) : base(member.BindingType, member.Member)
         {
+            Initializers = new EditableElementInitCollection();
             foreach (ElementInit e in member.Initializers)
             {
-                _initializers.Add(new EditableElementInit(e));
+                Initializers.Add(new EditableElementInit(e));
             }
         }
 
+        // Methods
         public override MemberBinding ToMemberBinding()
         {
-            return Expression.ListBind(_member, _initializers.GetElementsInit());
+            return Expression.ListBind(Member, Initializers.GetElementsInit());
         }
 
-         public override MemberBindingType BindingType
-        {
-            get
-            {
-                return MemberBindingType.ListBinding;
-            }
-            set
-            {
-                
-            }
-        }
     }
 }

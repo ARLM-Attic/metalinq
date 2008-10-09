@@ -5,73 +5,81 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableMethodCallExpression : EditableExpression
-    {
-        protected EditableExpressionCollection _arguments;
-        protected MethodInfo _method;
-        protected EditableExpression _object;
-        protected ExpressionType _nodeType;
-
+    {                        
+        // Properties
         [DataMember]
-        public EditableExpressionCollection Arguments { get { return _arguments; } set { _arguments = value; } }
-        public MethodInfo Method { get { return _method; } set { _method = value; } }
+        public EditableExpressionCollection Arguments
+        {
+            get;
+            set;
+        }
+
+        [XmlIgnore]
+        public MethodInfo Method
+        {
+            get;
+            set;
+        }
 
         [DataMember]
         public string MethodName
         {
             get
             {
-                return _method.ToSerializableForm();
+                return Method.ToSerializableForm();
             }
             set
             {
-                _method = _method.FromSerializableForm(value);
+                Method = Method.FromSerializableForm(value);
             }
         }
 
         [DataMember]
-        public EditableExpression Object { get { return _object; } set { _object = value; } }
-
+        public EditableExpression Object
+        {
+            get;
+            set;
+        }
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-                return _nodeType;
-            }
-            set
-            {
-                _nodeType = value;
-            }
+            get;
+            set;
         }
 
+        // Ctors
         public EditableMethodCallExpression()
         {
-
         }
 
         public EditableMethodCallExpression(EditableExpressionCollection arguments, MethodInfo method, EditableExpression theObject, ExpressionType nodeType)
         {
-            _arguments = arguments;
-            _method = method;
-            _object = theObject;
-            _nodeType = nodeType;
+            Arguments = arguments;
+            Method = method;
+            Object = theObject;
+            NodeType = nodeType;
         }
 
         public EditableMethodCallExpression(IEnumerable<EditableExpression> arguments, MethodInfo method, Expression theObject, ExpressionType nodeType) :
             this(new EditableExpressionCollection(arguments), method, EditableExpression.CreateEditableExpression(theObject), nodeType)
-        { }
+        { 
+        }
         
         public EditableMethodCallExpression(MethodCallExpression callEx) :
             this(new EditableExpressionCollection(callEx.Arguments),callEx.Method,EditableExpression.CreateEditableExpression(callEx.Object),callEx.NodeType)
-        { }
+        {
+        }
 
+        // Methods
         public override Expression ToExpression()
         {
-            return Expression.Call(_object.ToExpression(), _method, _arguments.GetExpressions().ToArray<Expression>());
+            return Expression.Call(Object.ToExpression(), Method, Arguments.GetExpressions().ToArray<Expression>());
         }
     }
 }

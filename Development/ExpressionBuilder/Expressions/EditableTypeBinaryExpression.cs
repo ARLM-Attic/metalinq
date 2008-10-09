@@ -4,62 +4,46 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableTypeBinaryExpression : EditableExpression
     {
-        protected EditableExpression _expression;
-        protected Type _typeOperand;
-
+        // Properties
         [DataMember]
-        public EditableExpression Expression { get { return _expression; } set { _expression = value; } }
-        public Type TypeOperand { get { return _typeOperand; } set { _typeOperand = value; } }
-
-        [DataMember()]
-        private string TypeOperandName
+        public EditableExpression Expression
         {
-            get
-            {
-                return _typeOperand.ToSerializableForm();
-            }
-            set
-            {
-                _typeOperand = _typeOperand.FromSerializableForm(value);
-            }
+            get;
+            set;
         }
-
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.TypeIs;
-            }
-            set
-            {
-                // throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.TypeIs; }
+            set { }
         }
 
+        //Ctors
         public EditableTypeBinaryExpression()
         {
-
         }
 
-        public EditableTypeBinaryExpression(TypeBinaryExpression typeBinEx) :
-            this( EditableExpression.CreateEditableExpression(typeBinEx.Expression),typeBinEx.TypeOperand)
+        public EditableTypeBinaryExpression(TypeBinaryExpression typeBinEx) 
+            : this(EditableExpression.CreateEditableExpression(typeBinEx.Expression), typeBinEx.TypeOperand)
         { }
 
-        public EditableTypeBinaryExpression(EditableExpression expression, Type typeOperand)
+        public EditableTypeBinaryExpression(EditableExpression expression, Type type)
+            : base(type)
         {
-            _expression = expression;
-            _typeOperand = typeOperand;
+            Expression = expression;
         }
 
+        // Methods
         public override Expression ToExpression()
         {
-            return System.Linq.Expressions.Expression.TypeIs(_expression.ToExpression(), _typeOperand);
-        }
+            return System.Linq.Expressions.Expression.TypeIs(Expression.ToExpression(), Type);
+        }        
     }
 }

@@ -10,44 +10,57 @@ namespace ExpressionBuilder
     [DataContract]
     public class EditableConditionalExpression : EditableExpression
     {
-        protected ExpressionType _nodeType;
-        protected EditableExpression _test;
-        protected EditableExpression _ifTrue;
-        protected EditableExpression _ifFalse;
+        // Properties 
+        [DataMember]
+        public EditableExpression Test
+        {
+            get;
+            set;
+        }
+        [DataMember]
+        public EditableExpression IfTrue
+        {
+            get;
+            set;
+        }
+        [DataMember]
+        public EditableExpression IfFalse
+        {
+            get;
+            set;
+        }
+         
+        public override ExpressionType NodeType
+        {
+            get;
+            set;
+        }
 
+        // Ctors
         public EditableConditionalExpression()
         {
-
         }
 
         public EditableConditionalExpression(ConditionalExpression condEx)
         {
-            _nodeType = condEx.NodeType;
-            _test = EditableExpression.CreateEditableExpression(condEx.Test);
-            _ifTrue = EditableExpression.CreateEditableExpression(condEx.IfTrue);
-            _ifFalse = EditableExpression.CreateEditableExpression(condEx.IfFalse);
+            NodeType = condEx.NodeType;
+            Test = EditableExpression.CreateEditableExpression(condEx.Test);
+            IfTrue = EditableExpression.CreateEditableExpression(condEx.IfTrue);
+            IfFalse = EditableExpression.CreateEditableExpression(condEx.IfFalse);
         }
 
         public EditableConditionalExpression(ExpressionType nodeType, EditableExpression test, EditableExpression ifTrue, EditableExpression ifFalse)
         {
-            _nodeType = nodeType;
-            _test = test;
-            _ifTrue = ifTrue;
-            _ifFalse = ifFalse;
+            NodeType = nodeType;
+            Test = test;
+            IfTrue = ifTrue;
+            IfFalse = ifFalse;
         }
 
-        [DataMember]
-        public EditableExpression Test { get { return _test; } set { _test = value; } }
-        [DataMember]
-        public EditableExpression IfTrue { get { return _ifTrue; } set { _ifTrue = value; } }
-        [DataMember]
-        public EditableExpression IfFalse { get { return _ifFalse; } set { _ifFalse = value; } }
-        [DataMember]
-        public override ExpressionType NodeType { get { return _nodeType; } set { _nodeType = value; } }
-
+        // Methods
         public override Expression ToExpression()
         {
-            return Expression.Condition(_test.ToExpression(),_ifTrue.ToExpression(),_ifFalse.ToExpression());
+            return Expression.Condition(Test.ToExpression(), IfTrue.ToExpression(), IfFalse.ToExpression());
         }
     }
 }

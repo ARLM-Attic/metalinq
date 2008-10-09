@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Reflection;
 using System.Linq.Expressions;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
@@ -12,27 +13,33 @@ namespace ExpressionBuilder
     [KnownType(typeof(EditableMemberAssignment))]
     [KnownType(typeof(EditableMemberListBinding))]
     [KnownType(typeof(EditableMemberMemberBinding))]
+    [XmlInclude(typeof(EditableMemberAssignment))]
+    [XmlInclude(typeof(EditableMemberListBinding))]
+    [XmlInclude(typeof(EditableMemberMemberBinding))]
     public abstract class EditableMemberBinding
-    {
-        protected MemberInfo _member;
-       
-        public abstract MemberBindingType BindingType { get; set; }       
+    {       
+        // Properties
+        public abstract MemberBindingType BindingType
+        {
+            get;
+            set;
+        }
 
-        public MemberInfo Member { get { return _member; } set { _member = value; } }
+        [XmlIgnore]
+        public MemberInfo Member
+        {
+            get;
+            set;
+        }
 
         [DataMember]
         public string MemberName
         {
-            get
-            {
-                return _member.ToSerializableForm();
-            }
-            set
-            {
-                _member = _member.FromSerializableForm(value);
-            }
+            get { return Member.ToSerializableForm(); }
+            set { Member = Member.FromSerializableForm(value); }
         }
 
+        // Ctors
         protected EditableMemberBinding()
         {
         }
@@ -40,9 +47,10 @@ namespace ExpressionBuilder
         protected EditableMemberBinding(MemberBindingType type, MemberInfo member)
         {
             BindingType = type;
-            _member = member;
+            Member = member;
         }
 
+        // Methods
         public abstract MemberBinding ToMemberBinding();
 
         public static EditableMemberBinding CreateEditableMemberBinding(MemberBinding member)

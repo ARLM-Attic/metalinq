@@ -25,7 +25,7 @@ namespace ExpressionBuilder
 
         public static MethodInfo FromSerializableForm(this MethodInfo methodInfo, string serializedValue)
         {
-            string[] fullName = serializedValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            string[] fullName = SplitString(serializedValue);
             string name = fullName[1];
             MethodInfo method = (from m in Type.GetType(fullName[0]).GetMethods()
                                  where m.ToString() == name
@@ -41,7 +41,7 @@ namespace ExpressionBuilder
 
         public static MemberInfo FromSerializableForm(this MemberInfo memberInfo, string serializedValue)
         {
-            string[] fullName = serializedValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            string[] fullName = SplitString(serializedValue);
             string name = fullName[1];
             MemberInfo member = (from m in Type.GetType(fullName[0]).GetMembers()
                                      where m.ToString() == name
@@ -64,7 +64,7 @@ namespace ExpressionBuilder
                 return null;
             else
             {
-                string[] fullName = serializedValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                string[] fullName = SplitString(serializedValue);
                 string name = fullName[1];
                 ConstructorInfo newObj = (from m in Type.GetType(fullName[0]).GetConstructors()
                                           where m.ToString() == name
@@ -72,5 +72,19 @@ namespace ExpressionBuilder
                 return newObj;
             }
         }
+
+        private static String[] SplitString(string str)
+        {
+            if (str.Contains(Environment.NewLine))
+            {
+                return str.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            }
+            else
+            {
+                return str.Split(new string[] { "\n" }, StringSplitOptions.None);
+            }
+
+        }
+
     }
 }

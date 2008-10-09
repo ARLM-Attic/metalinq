@@ -5,60 +5,55 @@ using System.Text;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Linq.Expressions;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableElementInit
     {
-        protected MethodInfo _method;
-        protected EditableExpressionCollection _arguments = new EditableExpressionCollection();
-
+        // Properties
         [DataMember]
-        public EditableExpressionCollection Arguments { get { return _arguments; } set { _arguments = value; } }
+        public EditableExpressionCollection Arguments
+        {
+            get;
+            set;
+        }
 
+        [XmlIgnore]
         public MethodInfo AddMethod
         {
-            get 
-            {
-                return _method;
-            }
-            set
-            {
-                _method = value;
-            }
+            get;
+            set;
         }
 
         [DataMember]
         public string AddMethodName
         {
-            get
-            {
-                return _method.ToSerializableForm();
-            }
-            set
-            {
-                _method = _method.FromSerializableForm(value);
-            }
+            get { return AddMethod.ToSerializableForm(); }
+            set { AddMethod = AddMethod.FromSerializableForm(value); }
         }
 
+        // Ctors
         public EditableElementInit()
         {
-
+            Arguments = new EditableExpressionCollection();
         }
 
-        public EditableElementInit(ElementInit elmInit)
+        public EditableElementInit(ElementInit elmInit) 
+            : this()
         {
-            _method = elmInit.AddMethod;
+            AddMethod = elmInit.AddMethod;
             foreach (Expression ex in elmInit.Arguments)
             {
-                _arguments.Add(EditableExpression.CreateEditableExpression(ex));
+                Arguments.Add(EditableExpression.CreateEditableExpression(ex));
             }
         }
 
+        // Methods
         public ElementInit ToElementInit()
         {
-            return Expression.ElementInit(_method, _arguments.GetExpressions());
+            return Expression.ElementInit(AddMethod, Arguments.GetExpressions());
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
@@ -22,15 +23,60 @@ namespace ExpressionBuilder
     [KnownType(typeof(EditableConditionalExpression))]
     [KnownType(typeof(EditableUnaryExpression))]
     [KnownType(typeof(EditableMethodCallExpression))]
+    [KnownType(typeof(EditableMemberAssignment))]
+    [XmlInclude(typeof(EditableMemberExpression))]
+    [XmlInclude(typeof(EditableListInitExpression))]
+    [XmlInclude(typeof(EditableNewExpression))]
+    [XmlInclude(typeof(EditableNewArrayExpression))]
+    [XmlInclude(typeof(EditableTypeBinaryExpression))]
+    [XmlInclude(typeof(EditableMemberInitExpression))]
+    [XmlInclude(typeof(EditableInvocationExpression))]
+    [XmlInclude(typeof(EditableBinaryExpression))]
+    [XmlInclude(typeof(EditableParameterExpression))]
+    [XmlInclude(typeof(EditableExpressionCollection))]
+    [XmlInclude(typeof(EditableConstantExpression))]
+    [XmlInclude(typeof(EditableConditionalExpression))]
+    [XmlInclude(typeof(EditableUnaryExpression))]
+    [XmlInclude(typeof(EditableMethodCallExpression))]    
+    [XmlInclude(typeof(EditableMemberAssignment))]
     public abstract class EditableExpression
-    {
-        [DataMember]
+    {        
+        // Properties
+        [DataMember]        
         public abstract ExpressionType NodeType { get; set; }
-        public abstract Expression ToExpression();
-        protected Type _type;
 
+        [XmlIgnore]
+        public Type Type
+        {
+            get;
+            set;
+        }
+        [DataMember]
+        public string TypeName
+        {
+            get
+            {                
+                if (Type == null)
+                    return null;
+
+                return Type.ToSerializableForm();
+            }
+            set
+            {
+                if (value != null)
+                    Type = Type.FromSerializableForm(value);
+            }
+        }
+
+        // Ctors
         public EditableExpression() { } //allow for non parameterized creation for all expressions
 
+        public EditableExpression(Type type) 
+        {
+            Type = type;
+        }
+
+        // Methods
         public static EditableExpression CreateEditableExpression<TResult>(Expression<Func<TResult>> ex)
         {
             LambdaExpression lambEx = Expression.Lambda<Func<TResult>>(ex.Body, ex.Parameters);
@@ -83,21 +129,6 @@ namespace ExpressionBuilder
             else return null;
         }
 
-        [DataMember()]
-        protected string TypeName
-        {
-            get
-            {
-                if (_type == null)
-                    return null;
-
-                return _type.ToSerializableForm();
-            }
-            set
-            {
-                if (value != null)
-                    _type = _type.FromSerializableForm(value);
-            }
-        }
+        public abstract Expression ToExpression();
     }
 }

@@ -4,67 +4,69 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
-    public class EditableLambdaExpression : EditableExpression 
+    public class EditableLambdaExpression : EditableExpression
     {
-        protected EditableExpression _body;
-        protected EditableExpressionCollection _parameters = new EditableExpressionCollection();        
-
+        // Properties
         [DataMember]
-        public EditableExpression Body { get { return _body; } set { _body = value; } }
-        [DataMember]
-        public EditableExpressionCollection Parameters { get { return _parameters; } set { _parameters = value; } }
-
-        public EditableLambdaExpression()
+        public EditableExpression Body
         {
-
+            get;
+            set;
         }
 
+        [DataMember]
+        public EditableExpressionCollection Parameters
+        {
+            get;
+            set;
+        }
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.Lambda;
-            }
-            set
-            {
-                //throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.Lambda; }
+            set { }
         }
 
-      
+        // Ctors
+        public EditableLambdaExpression()
+        {
+            Parameters = new EditableExpressionCollection();
+        }      
 
         public EditableLambdaExpression(LambdaExpression lambEx)
+            : base(lambEx.Type) 
         {
-            _body = EditableExpression.CreateEditableExpression(lambEx.Body);
-            _type = lambEx.Type;
+            Parameters = new EditableExpressionCollection();
+            Body = EditableExpression.CreateEditableExpression(lambEx.Body);
             foreach (ParameterExpression param in lambEx.Parameters)
-                _parameters.Add(EditableExpression.CreateEditableExpression(param));
+                Parameters.Add(EditableExpression.CreateEditableExpression(param));
         }
+
+        // Methods
         public override Expression ToExpression()
         {
-            Expression body = _body.ToExpression();
-            List<ParameterExpression> parameters = new List<ParameterExpression>(_parameters.GetParameterExpressions());
+            Expression body = Body.ToExpression();
+            List<ParameterExpression> parameters = new List<ParameterExpression>(Parameters.GetParameterExpressions());
 
             var bodyParameters = from edX in body.Nodes()
-                             where edX is ParameterExpression
-                             select edX;
+                                 where edX is ParameterExpression
+                                 select edX;
             for (int i = 0; i < parameters.Count; i++)
             {
                 var matchingParm = from parm in bodyParameters
                                    where (parm as ParameterExpression).Name == parameters[i].Name
                                       && (parm as ParameterExpression).Type == parameters[i].Type
                                    select parm as ParameterExpression;
-                if (matchingParm.Count<ParameterExpression>() == 1) 
+                if (matchingParm.Count<ParameterExpression>() == 1)
                     parameters[i] = matchingParm.First<ParameterExpression>() as ParameterExpression;
             }
-            
-            
-            return Expression.Lambda(_type, body, parameters);
 
+            return Expression.Lambda(Type, body, parameters);
         }
     }
 }

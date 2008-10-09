@@ -10,43 +10,42 @@ namespace ExpressionBuilder
     [DataContract]
     public class EditableBinaryExpression : EditableExpression
     {
-        EditableExpression _left;
-        EditableExpression _right;
-        ExpressionType _nodeType;
-
+        // Properties
         [DataMember]
-        public EditableExpression Left { get { return _left; } set { _left = value; } }
+        public EditableExpression Left
+        {
+            get;
+            set;
+        }
         [DataMember]
-        public EditableExpression Right { get { return _right; } set { _right = value; } }
-
-        public EditableBinaryExpression()
+        public EditableExpression Right
         {
-
+            get;
+            set;
         }
-
-        public EditableBinaryExpression(BinaryExpression binex)
-        {
-            _left = EditableExpression.CreateEditableExpression(binex.Left);
-            _right = EditableExpression.CreateEditableExpression(binex.Right);
-            _nodeType = binex.NodeType;
-        }
-
-        public override Expression ToExpression()
-        {
-            return Expression.MakeBinary(_nodeType, _left.ToExpression(), _right.ToExpression());
-        }
-
-        [DataMember]
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-               return _nodeType;
-            }
-            set
-            {
-                _nodeType = value;
-            }
+            get;
+            set;
         }
+
+        // Ctors
+        public EditableBinaryExpression()
+        {
+        }
+
+        public EditableBinaryExpression(BinaryExpression binex) : base(binex.Type)
+        {
+            Left = EditableExpression.CreateEditableExpression(binex.Left);
+            Right = EditableExpression.CreateEditableExpression(binex.Right);
+            NodeType = binex.NodeType;
+        }
+
+        // Methods
+        public override Expression ToExpression()
+        {
+            return Expression.MakeBinary(NodeType, Left.ToExpression(), Right.ToExpression());
+        }        
     }
 }

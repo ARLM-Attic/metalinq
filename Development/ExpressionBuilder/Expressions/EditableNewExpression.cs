@@ -5,50 +5,51 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableNewExpression : EditableExpression
     {
-        protected ConstructorInfo _constructor;
-        protected EditableExpressionCollection _arguments;    
-
-        public ConstructorInfo Constructor { get { return _constructor; } set { _constructor = value; } }
-        [DataMember]
-        public EditableExpressionCollection Arguments { get { return _arguments; } set { _arguments = value; } }
-
-        [DataMember]
-        public EditableMemberInfoCollection Members { get; set; }
-      
-        [DataMember()]
-        private string ConstructorName
+        // Properties                
+        [XmlIgnore]
+        public ConstructorInfo Constructor
         {
-            get
-            {
-                return _constructor.ToSerializableForm();
-            }
-            set
-            {
-                _constructor = _constructor.FromSerializableForm(value);
-            }
+            get;
+            set;
         }
 
+        [DataMember]
+        public EditableExpressionCollection Arguments
+        {
+            get;
+            set;
+        }
+
+        [DataMember]
+        public EditableMemberInfoCollection Members
+        {
+            get;
+            set;
+        }
+
+        [DataMember]
+        public string ConstructorName
+        {
+            get { return Constructor.ToSerializableForm(); }
+            set { Constructor = Constructor.FromSerializableForm(value); }
+        }
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.New;
-            }
-            set
-            {
-                // throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.New; }
+            set { }
         }
 
+        // Ctors
         public EditableNewExpression()
         {
-
         }
 
         public EditableNewExpression(NewExpression newEx)
@@ -60,19 +61,20 @@ namespace ExpressionBuilder
         { }
 
         public EditableNewExpression(ConstructorInfo constructor, EditableExpressionCollection arguments, IEnumerable<MemberInfo> members, Type type)
+            : base(type)
         {
-            _arguments = arguments;
-            _constructor = constructor;
-            _type = type;
+            Arguments = arguments;
+            Constructor = constructor;            
             Members = new EditableMemberInfoCollection(members);
         }
 
+        // Methods
         public override Expression ToExpression()
         {
-            if (_constructor != null)
-                return Expression.New(_constructor, _arguments.GetExpressions());
+            if (Constructor != null)
+                return Expression.New(Constructor, Arguments.GetExpressions());
             else
-                return Expression.New(_type);
+                return Expression.New(Type);
         }
     }
 }

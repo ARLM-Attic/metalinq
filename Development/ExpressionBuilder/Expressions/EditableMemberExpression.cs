@@ -5,66 +5,73 @@ using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableMemberExpression : EditableExpression
     {
-        EditableExpression _ex;
-        MemberInfo _member;
-       
-        public MemberInfo Member { get { return _member; } set { _member = value; } }
-        [DataMember]
-        public EditableExpression Expression { get { return _ex; } set { _ex = value; } }
-
-        public EditableMemberExpression()
+        // Properties
+        [XmlIgnore]
+        public MemberInfo Member
         {
-
+            get;
+            set;
         }
-        
+
+        [DataMember]
+        public EditableExpression Expression
+        {
+            get;
+            set;
+        }
+
         [DataMember]
         public string MemberName
         {
             get
             {
-                return _member.ToSerializableForm();
+                return Member.ToSerializableForm();
             }
             set
             {
-                _member = _member.FromSerializableForm(value);
+                Member = Member.FromSerializableForm(value);
             }
         }
-
+        
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.MemberAccess;
-            }
-            set
-            {
-                //throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.MemberAccess; }
+            set { }
+        }
+
+        // Ctors
+        public EditableMemberExpression()
+        {
+
         }
 
         public EditableMemberExpression(Expression rawEx, MemberInfo member)
-            : this(EditableExpression.CreateEditableExpression(rawEx),member)
-        {}
+            : this(EditableExpression.CreateEditableExpression(rawEx), member)
+        { 
+        }
 
         public EditableMemberExpression(EditableExpression editEx, MemberInfo member)
         {
-            _member = member;
-            _ex = editEx;
+            Member = member;
+            Expression = editEx;
         }
 
         public EditableMemberExpression(MemberExpression membEx)
             : this(EditableExpression.CreateEditableExpression(membEx.Expression), membEx.Member)
-        {}
+        { 
+        }
 
+        // Methods
         public override Expression ToExpression()
         {
-            return System.Linq.Expressions.Expression.MakeMemberAccess(_ex.ToExpression(), _member);
+            return System.Linq.Expressions.Expression.MakeMemberAccess(Expression.ToExpression(), Member);
         }
     }
 }

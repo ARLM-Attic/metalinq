@@ -4,56 +4,60 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableListInitExpression : EditableExpression
     {
-        protected EditableElementInitCollection _initializers = new EditableElementInitCollection();
-        protected EditableExpression _new;
+        // Properties
+        [DataMember]
+        public EditableExpression NewExpression
+        {
+            get;
+            set;
+        }
 
         [DataMember]
-        public EditableExpression NewExpression { get { return _new; } set { _new = value; } }
-        [DataMember]
-        public EditableElementInitCollection Initializers { get { return _initializers; } set { _initializers = value; } }
+        public EditableElementInitCollection Initializers
+        {
+            get;
+            set;
+        }
         
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.ListInit;
-            }
-            set
-            {
-                //throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.ListInit; }
+            set { }
         }
 
+        // Ctors
         public EditableListInitExpression()
         {
-
+            Initializers = new EditableElementInitCollection();
         }
 
         public EditableListInitExpression(ListInitExpression listInit)
+            : this()
         {
-            _new = EditableExpression.CreateEditableExpression(listInit.NewExpression);
+            NewExpression = EditableExpression.CreateEditableExpression(listInit.NewExpression);
             foreach (ElementInit e in listInit.Initializers)
             {
-                _initializers.Add(new EditableElementInit(e));
+                Initializers.Add(new EditableElementInit(e));
             }
         }
 
         public EditableListInitExpression(EditableExpression newEx, IEnumerable<EditableElementInit> initializers)
         {
-            _new = newEx;
-            foreach (EditableElementInit ex in initializers)
-                _initializers.Add(ex);
+            Initializers = new EditableElementInitCollection(initializers);
+            NewExpression = newEx;
         }
 
+        // Methods
         public override Expression ToExpression()
         {
-            return Expression.ListInit(_new.ToExpression() as NewExpression, _initializers.GetElementsInit().ToArray<ElementInit>());
+            return Expression.ListInit(NewExpression.ToExpression() as NewExpression, Initializers.GetElementsInit().ToArray<ElementInit>());
         }
     }
 }

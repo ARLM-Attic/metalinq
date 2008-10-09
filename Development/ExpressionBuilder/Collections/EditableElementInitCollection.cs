@@ -7,20 +7,20 @@ using System.Linq.Expressions;
 namespace ExpressionBuilder
 {
     [Serializable]
-    public class EditableMemberBindingCollection : List<EditableMemberBinding>
+    public class EditableElementInitCollection : List<EditableElementInit>
     {
-        public EditableMemberBindingCollection() : base() { }
-        public EditableMemberBindingCollection(IEnumerable<EditableMemberBinding> source) : base(source) { }
-        public EditableMemberBindingCollection(IEnumerable<MemberBinding> source) 
+        public EditableElementInitCollection() : base() { }
+        public EditableElementInitCollection(IEnumerable<EditableElementInit> source) : base(source) { }
+        public EditableElementInitCollection(IEnumerable<ElementInit> source) 
         {
-            foreach (MemberBinding ex in source)
-                this.Add(EditableMemberBinding.CreateEditableMemberBinding(ex));
+            foreach (ElementInit ex in source)
+                this.Add(new EditableElementInit(ex));
         }
 
-        public IEnumerable<MemberBinding> GetMemberBindings()
+        public IEnumerable<ElementInit> GetElementsInit()
         {
-            foreach (EditableMemberBinding editEx in this)
-                yield return editEx.ToMemberBinding();
+            foreach (EditableElementInit editEx in this)
+                yield return editEx.ToElementInit();
         }       
     }
 }

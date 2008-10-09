@@ -4,48 +4,46 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace ExpressionBuilder
 {
     [DataContract]
     public class EditableParameterExpression : EditableExpression
     {
-        private static Dictionary<string, ParameterExpression> _usableParameters =
-            new Dictionary<string, ParameterExpression>();
-       
-        protected string _name;
+        // Members
+        private static Dictionary<string, ParameterExpression> _usableParameters = new Dictionary<string, ParameterExpression>();
 
-        public Type Type { get { return _type; } set { _type = value; } }
+        // Properties
         [DataMember]
-        public string Name { get { return _name; } set { _name = value; } }
-
-        public EditableParameterExpression()
-        {
-
-        }       
+        public string Name 
+        { 
+            get; 
+            set; 
+        }
 
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.Parameter;
-            }
-            set
-            {
-                // throw new Exception("The method or operation is not implemented.");
-            }
+            get { return ExpressionType.Parameter; }
+            set { }
+        }
+
+        // Ctors
+        public EditableParameterExpression()
+        {
         }
 
         public EditableParameterExpression(ParameterExpression parmEx)
-            : this(parmEx.Type,parmEx.Name)
+            : this(parmEx.Type, parmEx.Name)
         { }
 
         public EditableParameterExpression(Type type, string name)
+            : base(type)
         {
-            _type = type;
-            _name = name;
+            Name = name;
         }
 
+        // Methods
         static public ParameterExpression CreateParameter(Type type, string name)
         {
             ParameterExpression parameter = null;
@@ -64,7 +62,7 @@ namespace ExpressionBuilder
 
         public override Expression ToExpression()
         {
-            return CreateParameter(_type, _name); 
+            return CreateParameter(Type, Name);
         }
     }
 }
