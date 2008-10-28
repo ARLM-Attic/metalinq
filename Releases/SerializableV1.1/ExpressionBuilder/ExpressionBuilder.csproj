@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D894C79E-8B14-49D1-839C-6F2B429CFA1C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -35,27 +35,41 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EditableBinaryExpression.cs" />
-    <Compile Include="EditableConditionalExpression.cs" />
-    <Compile Include="EditableConstantExpression.cs" />
-    <Compile Include="EditableExpression.cs">
+    <Compile Include="Collections\EditableMemberBindingCollection.cs" />
+    <Compile Include="Collections\EditableElementInitCollection.cs" />
+    <Compile Include="Collections\EditableMemberInfoCollection.cs" />
+    <Compile Include="Expressions\EditableBinaryExpression.cs" />
+    <Compile Include="Expressions\EditableConditionalExpression.cs" />
+    <Compile Include="Expressions\EditableConstantExpression.cs" />
+    <Compile Include="Expressions\EditableExpression.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EditableExpressionCollection.cs" />
-    <Compile Include="EditableInvocationExpression.cs" />
-    <Compile Include="EditableLambdaExpression.cs" />
-    <Compile Include="EditableListInitExpression.cs" />
-    <Compile Include="EditableMemberExpression.cs" />
-    <Compile Include="EditableMemberInitExpression.cs" />
-    <Compile Include="EditableMethodCallExpression.cs" />
-    <Compile Include="EditableNewArrayExpression.cs" />
-    <Compile Include="EditableNewExpression.cs" />
-    <Compile Include="EditableParameterExpression.cs" />
-    <Compile Include="EditableTypeBinaryExpression.cs" />
-    <Compile Include="EditableUnaryExpression.cs" />
+    <Compile Include="Collections\EditableExpressionCollection.cs" />
+    <Compile Include="Expressions\EditableInvocationExpression.cs" />
+    <Compile Include="Expressions\EditableLambdaExpression.cs" />
+    <Compile Include="Expressions\EditableListInitExpression.cs" />
+    <Compile Include="Expressions\EditableMemberExpression.cs" />
+    <Compile Include="Expressions\EditableMemberInitExpression.cs" />
+    <Compile Include="Expressions\EditableMethodCallExpression.cs" />
+    <Compile Include="Expressions\EditableNewArrayExpression.cs" />
+    <Compile Include="Expressions\EditableNewExpression.cs" />
+    <Compile Include="Expressions\EditableParameterExpression.cs" />
+    <Compile Include="Expressions\EditableTypeBinaryExpression.cs" />
+    <Compile Include="Expressions\EditableUnaryExpression.cs" />
+    <Compile Include="Extensions\EditableExpressionExtensions.cs" />
+    <Compile Include="Extensions\ExpressionExtensions.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs" />
+    <Compile Include="Initializers\EditableElementInit.cs" />
+    <Compile Include="Initializers\EditableMemberAssignment.cs" />
+    <Compile Include="Initializers\EditableMemberBinding.cs" />
+    <Compile Include="Initializers\EditableMemberListBinding.cs" />
+    <Compile Include="Initializers\EditableMemberMemberBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
