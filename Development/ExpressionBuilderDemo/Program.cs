@@ -66,10 +66,29 @@ namespace ExpressionBuilderDemo
         }     
     }
 
+    public class Foo
+    {
+        public bool Bar<T, U>()
+        {
+            return true;
+        }
+
+        public bool Bar2()
+        {
+            return true;
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
+            Expression<Func<Foo, bool>> myEx2 = x => x.Bar2();
+            CheckSerialization<Foo, bool>(myEx2, new Foo());
+
+            Expression <Func<Foo,bool>>  myEx =  x => x.Bar<string, List<Foo>>();
+            CheckSerialization<Foo, bool>(myEx, new Foo());
+
+
             //make a lambda            
             //create an editable version of the lambda
             //Expression<Func<int, int>> lambda = x => x + 1;

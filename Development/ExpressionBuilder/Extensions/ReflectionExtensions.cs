@@ -20,16 +20,31 @@ namespace ExpressionBuilder
 
         public static string ToSerializableForm(this MethodInfo method)
         {
-            return method.DeclaringType.AssemblyQualifiedName + Environment.NewLine + method.ToString();
+            string serializableName = method.DeclaringType.AssemblyQualifiedName + Environment.NewLine;
+            if (!method.IsGenericMethod)
+            {
+                serializableName += method.ToString();
+            }
+            else
+            {
+                serializableName += method.GetGenericMethodDefinition().ToString() + Environment.NewLine +
+                    String.Join(Environment.NewLine, method.GetGenericArguments().Select(ty => ty.ToSerializableForm()).ToArray());
+            }
+            return serializableName;
         }
 
         public static MethodInfo FromSerializableForm(this MethodInfo methodInfo, string serializedValue)
         {
             string[] fullName = SplitString(serializedValue);
-            string name = fullName[1];
+            string name = fullName[1];            
             MethodInfo method = (from m in Type.GetType(fullName[0]).GetMethods()
                                  where m.ToString() == name
                                  select m).First();
+
+            if (method.IsGenericMethod)
+            {
+                method = method.MakeGenericMethod(fullName.Skip(2).Select(s => typeof(string).FromSerializableForm(s)).ToArray());
+            }
             return method;
 
         }
