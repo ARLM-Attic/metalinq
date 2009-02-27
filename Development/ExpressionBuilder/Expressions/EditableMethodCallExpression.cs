@@ -79,7 +79,11 @@ namespace ExpressionBuilder
         // Methods
         public override Expression ToExpression()
         {
-            return Expression.Call(Object.ToExpression(), Method, Arguments.GetExpressions().ToArray<Expression>());
+            Expression instanceExpression = null;
+            if (Object != null)
+                instanceExpression = Object.ToExpression();
+
+            return Expression.Call(instanceExpression, Method, Arguments.GetExpressions().ToArray<Expression>());
         }
     }
 }

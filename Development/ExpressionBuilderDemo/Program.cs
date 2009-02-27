@@ -33,6 +33,8 @@ namespace ExpressionBuilderDemo
     [DataContract]
     public class Test
     {
+        static string value;
+
         public Test()
         {
 
@@ -80,6 +82,7 @@ namespace ExpressionBuilderDemo
     }
     class Program
     {
+        public static string message = "hi";
         static void Main(string[] args)
         {
             Expression<Func<Foo, bool>> myEx2 = x => x.Bar2();
@@ -111,7 +114,7 @@ namespace ExpressionBuilderDemo
             //EditableParameterExpression
             //EditableConstantExpression
             //EditableExpressionCollection
-            CheckSerialization<int, int>(x => x + x, numberValue);
+            CheckSerialization<int, int>(x => x + x, numberValue);            
 
             //EditableConditionalExpression
             //EditableUnaryExpression
@@ -120,9 +123,11 @@ namespace ExpressionBuilderDemo
 
             //EditableMethodCallExpression
             CheckSerialization<int, string>(x => x.ToString(), numberValue);
+            CheckSerialization<int, string>(x => string.Concat("",""), numberValue);
 
             //EditableMemberExpression                    
             CheckSerialization<Test, int>((x) => x.num + x.Number, testObject);
+            CheckSerialization<int, string>((x) => Program.message, numberValue);
 
             //EditableTypeBinaryExpression
             CheckSerialization<object, bool>((x) => (x is Test), testObject);

@@ -71,7 +71,13 @@ namespace ExpressionBuilder
         // Methods
         public override Expression ToExpression()
         {
-            return System.Linq.Expressions.Expression.MakeMemberAccess(Expression.ToExpression(), Member);
+            Expression expression = null;
+            if (Expression != null)
+            {
+                expression = Expression.ToExpression();
+            }
+
+            return System.Linq.Expressions.Expression.MakeMemberAccess(expression, Member);
         }
     }
 }

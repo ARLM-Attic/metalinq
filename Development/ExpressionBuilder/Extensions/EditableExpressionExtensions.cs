@@ -46,7 +46,10 @@ namespace ExpressionBuilder
             {
                 foreach (EditableExpression x in (source as EditableMethodCallExpression).Arguments)
                     yield return x;
-                yield return (source as EditableMethodCallExpression).Object;
+                if ((source as EditableMethodCallExpression).Object != null)
+                {
+                    yield return (source as EditableMethodCallExpression).Object;
+                }
             }
             else if (source is EditableNewArrayExpression)
                 foreach (EditableExpression x in (source as EditableNewArrayExpression).Expressions)

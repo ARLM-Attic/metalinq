@@ -44,7 +44,10 @@ namespace ExpressionBuilder
             {
                 foreach (Expression x in (source as MethodCallExpression).Arguments)
                     yield return x;
-                yield return (source as MethodCallExpression).Object;
+                if ((source as MethodCallExpression).Object != null)
+                {
+                    yield return (source as MethodCallExpression).Object;
+                }
             }
             else if (source is NewArrayExpression)
                 foreach (Expression x in (source as NewArrayExpression).Expressions)
